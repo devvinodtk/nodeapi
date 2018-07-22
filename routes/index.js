@@ -54,8 +54,10 @@ routes.get('/product/:id', (req, response) => {
         ProductFamily: "",
         ProductLifecycle: "",
         PLMEffectiveDate: "",
+        PLMEffectiveDateSince:"",
         Notes: ""
     };
+    var PLMEffectiveDateSinceText = '';
     request(url, (err, res, html) => {
 
         if(!err && res.statusCode == 200) {
@@ -77,7 +79,13 @@ routes.get('/product/:id', (req, response) => {
 
             var plmEffectiveDate  = productTable.children("td:contains('PLM Effective Date')");
             var plmEffectiveDateText = plmEffectiveDate.length ? plmEffectiveDate.siblings('td').text().trim() : "";
-
+            if(plmEffectiveDateText) {
+                PLMEffectiveDateSinceText = plmEffectiveDateText.split(':')[1].trim();
+                if(PLMEffectiveDateSinceText) {
+                    PLMEffectiveDateSinceText = PLMEffectiveDateSinceText.split('.').join('/');        
+                }
+            }  
+            
             var notes  = productTable.children("td:contains('Notes')");
             var notesText = notes.length ? notes.siblings('td').children('div').text().trim()
                             .replace(/\s\s+/g, ' ') : "";
@@ -88,6 +96,7 @@ routes.get('/product/:id', (req, response) => {
                 ProductFamily: productFamilyText,
                 ProductLifecycle: productLifecycleText,
                 PLMEffectiveDate: plmEffectiveDateText,
+                PLMEffectiveDateSince: PLMEffectiveDateSinceText,
                 Notes: notesText
             };
         }

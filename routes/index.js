@@ -11,7 +11,7 @@ routes.get('/processcsv/:filepath', (req,resp) => {
 });
 
 routes.get('/allproducts', (req, response) => {
-    var allproducts = [];
+    var allproducts = new Array();
     var idsList = [
         '7NG3033-0JN00',
         '7MF4033-1CA00-1AA7-Z',
@@ -29,19 +29,21 @@ routes.get('/allproducts', (req, response) => {
         '6ES7331-7TF01-0AB0',
         '6ES7332-8TF01-0AB0'
     ];
+    var count = 0;
     var url = 'https://testpredi.azurewebsites.net/product/';
     for(var id of idsList) {
         request (url+ id, (err, res, html) => {
+            count +=1;
             if(!err && res.statusCode == 200) {
                 allproducts.push(res.body); 
             }
+            if(count == idsList.length) {
+                response.statusCode = 200;
+                response.send('['+ allproducts.toString()+ ']');
+                return;
+            }
         });
-    }
-    setTimeout(() => {
-        response.statusCode = 200;
-        response.send(allproducts.toString());
-    },2000);
-    
+    }    
 });
 
 routes.get('/product/:id', (req, response) => {  

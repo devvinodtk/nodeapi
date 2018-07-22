@@ -10,6 +10,40 @@ routes.get('/processcsv/:filepath', (req,resp) => {
 
 });
 
+routes.get('/allproducts', (req, response) => {
+    var allproducts = [];
+    var idsList = [
+        '7NG3033-0JN00',
+        '7MF4033-1CA00-1AA7-Z',
+        '7NG3242-0BA10',
+        '6ES7400-1TA00-0AA0',
+        '6ES7400-1TA00-0AA0',
+        '6ES7153-2DA80-0XB0',
+        '6ES7153-2DA80-0XB0',
+        '6ES7153-4BA00-0XB0',
+        '6GK7443-1EX30-0XE0',
+        '6GK7443-5DX05-0XE0',
+        '6ES7414-3EM06-0AB0',
+        '6ES7407-0KA02-0AA0',
+        '6ES7331-7TF01-0AB0',
+        '6ES7331-7TF01-0AB0',
+        '6ES7332-8TF01-0AB0'
+    ];
+    var url = 'https://testpredi.azurewebsites.net/product/';
+    for(var id of idsList) {
+        request (url+ id, (err, res, html) => {
+            if(!err && res.statusCode == 200) {
+                allproducts.push(res.body); 
+            }
+        });
+    }
+    setTimeout(() => {
+        response.statusCode = 200;
+        response.send(allproducts.toString());
+    },2000);
+    
+});
+
 routes.get('/product/:id', (req, response) => {  
     var url = 'https://mall.industry.siemens.com/mall/en/ww/Catalog/Product/'+ req.params.id;
     var productJSON = {
